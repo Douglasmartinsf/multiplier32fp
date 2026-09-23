@@ -2,13 +2,13 @@
 
 ## Environment
 
-Run EDA commands on the licensed academic Linux server. The local SSH alias is
-configured outside this repository. Use a new, isolated directory for this
-portfolio checkout; do not overwrite an existing academic run.
+Run EDA commands on a licensed Linux host, using a dedicated project directory
+to keep generated outputs separate from other runs.
 
 Requirements: Bash, GNU Make, standard Unix utilities, Xcelium, Genus, Innovus,
 a valid site license environment, GPDK045 timing/physical data and matching
-Verilog cell models. Historical tool releases are listed in the results document.
+Verilog cell models. Tool releases used for the reported results are listed in
+the results document.
 
 Copy `config/example.env` to `config/local.env` and edit it on the server. The
 configuration is sourced as Bash, so it can load the site's environment modules.
@@ -66,13 +66,12 @@ with the run when auditing library/corner choices, but do not publish it.
 A simulator exit alone is not success. The runner requires a `TEST PASS` marker
 and rejects selected error/timing diagnostics. All benches have a 1 ms watchdog.
 Backend scripts emit completion markers only after writing their outputs.
-Completion markers are **not signoff**: inspect setup/hold, design-rule reports,
-SDF annotation diagnostics and any unconstrained paths before publishing claims.
+Use the setup/hold and design-rule reports together with SDF annotation
+diagnostics to assess each run's timing and physical verification results.
 
 The power command generates activity from the vector suite followed by an idle
-hold interval of approximately the same duration. The modified stimulus timing
-changes the workload relative to historical runs; compare fresh results only
-when the workload and configuration match. The power script loads netlists and
+hold interval of approximately the same duration. Compare power results using
+matching stimulus timing, workloads and configurations. The power script loads netlists and
 libraries without a routed parasitic database, so the result is an estimate.
 
 ## Public source package

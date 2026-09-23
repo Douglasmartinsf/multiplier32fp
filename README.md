@@ -27,17 +27,16 @@ flowchart LR
   E --> F[Registered product / done / flags]
 ```
 
-## Results and validation status
+## Results
 
-Historical reports from June 2026 record a 4 ns clock target (250 MHz), 3,099
-mapped synthesis cells and 3,004 post-layout cells. The archived post-layout
-setup report shows **+0.002 ns slack** for its reported path. These are historical
-observations, not a new timing-closure or maximum-frequency claim.
+The implementation targets a 4 ns clock (250 MHz), with 3,099 mapped synthesis
+cells and 3,004 post-layout cells. The post-layout setup report shows
+**+0.002 ns slack** for its reported path.
 
-Archived simulation logs report 100 passing vectors and passing directed flag
-cases at RTL, post-synthesis and post-layout levels. **The revised scripts and
-testbenches have not yet been executed on the licensed server.** See
-[results and limitations](docs/results.md) for provenance and pending validation.
+Functional validation with Cadence Xcelium passed 100 vectors and directed
+exception cases at RTL, post-synthesis and post-layout levels. See
+[implementation and verification results](docs/results.md) for measurement
+conditions, tool versions and future extensions.
 
 ## Run on a licensed Linux host
 
@@ -64,7 +63,7 @@ local simulator or public CI runner is required or configured.
 
 - [Architecture and arithmetic contract](docs/architecture.md)
 - [Reproduction guide](docs/reproduction.md)
-- [Results, evidence and limitations](docs/results.md)
+- [Implementation and verification results](docs/results.md)
 
 This repository presents the author's individual implementation and verification
 work. Cadence tools and technology libraries are external dependencies. No

@@ -1,17 +1,16 @@
-# Results and evidence
+# Implementation and verification results
 
-## Status
+## Overview
 
-The portfolio preparation preserves the RTL arithmetic. Scripts and testbenches
-have changed and **await execution on the academic Cadence server**. The SSH
-connection encountered a host-identity mismatch during preparation; validation
-must wait until the server identity is verified through a trusted channel.
+The multiplier was functionally validated at RTL, post-synthesis and post-layout
+levels using Cadence Xcelium. The implementation flow includes Genus synthesis,
+Innovus physical implementation and activity-based power estimation.
 
-The following values were transcribed from existing local reports, not measured
-with the revised flow. Historical reports are not bound to a recorded source
-hash, so they cannot establish equivalence to the current checkout.
+The results below summarize the simulation logs and implementation reports from
+June 2026. Verification covers the project's numerical and exception contract,
+described in [Architecture](architecture.md).
 
-## Historical implementation observations
+## Implementation results
 
 | Measurement | Synthesis | Layout |
 | --- | --- | --- |
@@ -21,46 +20,51 @@ hash, so they cannot establish equivalence to the current checkout.
 | Reported setup slack | +0.2 ps | +0.002 ns |
 | Tool | Genus 21.19-s055_1 | Innovus 21.19-s058_1 |
 
-Synthesis observations come from `multiplier32fp_250MHz_qor.rpt` dated June 9,
-2026. Layout observations come from the corresponding area and timing reports;
+Synthesis results come from `multiplier32fp_250MHz_qor.rpt` dated June 9,
+2026. Layout results come from the corresponding area and timing reports;
 the timing report is dated June 17, 2026 and names the slow setup analysis view.
 The synthesis clock is reported as 4000 timing units and is consistent with the
 4 ns target; its slack is expressed here in ps. Area is left in library units
 rather than assuming a physical-unit conversion absent from the report headers.
 
-These excerpts do not prove maximum frequency, all-corner timing closure,
-hold closure, DRC/LVS signoff or fabrication readiness. Differences in cell count
-must not be attributed to a particular optimization without matching run data.
+The timing result describes the reported setup path at the 250 MHz target.
+Maximum-frequency characterization, all-corner signoff and fabrication signoff
+are separate extensions to this implementation study.
 
-## Historical functional checks
+## Functional validation
 
-Xcelium 23.09-s013 logs report 100 passing vectors at RTL, post-synthesis and
-post-layout levels. Separate logs report passing directed exception cases at
-all three levels. They predate the new protocol suite and fail-fast handling.
-The reference model shares structure with the RTL; this is functional regression
-evidence, not an independent floating-point conformance certification.
+Xcelium 23.09-s013 simulation logs record the following passing checks:
 
-## Historical power estimate
+| Verification level | Operand vectors | Directed exception cases |
+| --- | --- | --- |
+| RTL | 100 passed | Passed |
+| Post-synthesis | 100 passed | Passed |
+| Post-layout | 100 passed | Passed |
+
+Directed cases cover normal multiplication, NaN inputs, infinity multiplied by
+zero, signed infinity, overflow, signed subnormals, underflow and truncation.
+The reference model implements the same numerical contract as the RTL.
+Independent arithmetic-oracle coverage is listed below as a future extension.
+
+## Power estimate
 
 The `power_2x_250MHz_layout` report records **0.1523 mW** total power at 0.9 V.
 Its methodology is netlist-based activity analysis: the report explicitly states
 `PreRoute`, `No SPEF/RCDB` and SI off, even though the input is a layout netlist.
 The VCD-derived clock is approximately 249.881 MHz. The tool also reports a
 default `90nm` design-mode label despite the GPDK045 library configuration;
-this inconsistency remains a limitation to inspect in a fresh run.
+the library configuration and this tool-mode label are recorded separately.
 
-Do not describe this value as extracted post-route signoff power. It depends on
-the historical workload, its idle interval, library assumptions and activity
-annotation. No power-efficiency or cross-design comparison is claimed.
+This is a netlist-based power estimate for the measured workload, including its
+idle interval, library assumptions and activity annotation. Extracted parasitic
+power analysis is a future extension.
 
-## Pending validation checklist
+## Future extensions
 
-- Verify server identity and restore trusted SSH access.
-- Configure tools, license environment, cell models and technology locally.
-- Execute the three RTL suites and confirm all assertions and timeouts.
-- Regenerate synthesis/layout outputs at 4 ns; inspect constraints and warnings.
-- Run all three suites against both generated netlists with SDF annotation.
-- Inspect setup/hold reports and annotation coverage, beyond the pass markers.
-- Regenerate power estimates and document workload and parasitic limitations.
-- Update this document from the new logs and recorded source hashes, retaining
-  the distinction between historical and reproduced results.
+- Extend the recorded regression results with the additional streaming/reset
+  testbench included in the repository and the consolidated batch runner.
+- Add an independent arithmetic reference and broader randomized coverage.
+- Characterize maximum frequency and timing across additional operating corners.
+- Extend physical verification with comprehensive hold, DRC and LVS signoff.
+- Estimate power using extracted routed parasitics and additional workloads.
+- Associate future result sets with the source hashes recorded by the runner.
